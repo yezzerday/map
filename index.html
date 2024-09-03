@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -56,7 +56,8 @@
     <div class="dropdown-container" id="dropdown"></div>
     <div id="map"></div>
     <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiamFydWRhIiwiYSI6ImNtMDc5ZXViMDEzNGkya3NicGZzaGI1ZncifQ.N2tDCng_RYc0uCAymQ-LdA';
+       mapboxgl.accessToken = 'pk.eyJ1IjoiamFydWRhIiwiYSI6ImNtMDc5ZXViMDEzNGkya3NicGZzaGI1ZncifQ.N2tDCng_RYc0uCAymQ-LdA';
+
 
         var universityCoordinates = [100.19424882682976, 16.74518953316748];
         var bbox = [
@@ -116,7 +117,7 @@
                                 // เพิ่มพินใหม่
                                 var newMarker = new mapboxgl.Marker()
                                     .setLngLat(coordinates)
-                                    .setPopup(new mapboxgl.Popup().setHTML(`<h3>${placeName}</h3><button onclick="sendToUnity('${placeName}')">Select</button>`))
+                                    .setPopup(new mapboxgl.Popup().setHTML(`<h3>${placeName}</h3><button onclick="sendToUnity('${placeName}', [${coordinates[0]}, ${coordinates[1]}])">Select</button>`))
                                     .addTo(map);
 
                                 markers.push(newMarker); // Add marker to the markers array
@@ -146,20 +147,14 @@
             dropdown.style.display = 'none'; // Hide dropdown
         });
 
-        // ฟังก์ชันส่งข้อมูลไปยัง Unity
-        function sendToUnity(placeName) {
+      // ฟังก์ชันในการส่งข้อมูลพิกัดไปยัง Unity
+        function sendToUnity(placeName, coordinates) {
             if (window.Unity && window.Unity.call) {
-                window.Unity.call(placeName);
+                // ส่งชื่อสถานที่และพิกัดไปยัง Unity
+                window.Unity.call(`locationSelected:${placeName}:${coordinates[0]},${coordinates[1]}`);
             }
         }
 
-        // ปิด dropdown เมื่อคลิกที่อื่น
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.search-container')) {
-                dropdown.style.display = 'none';
-            }
-        });
     </script>
 </body>
 </html>
-
