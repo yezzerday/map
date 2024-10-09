@@ -1,15 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>AR.js A-Frame Location-based</title>
-<script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-<script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex-location-only.js'></script>
-<script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple AR Test</title>
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <!-- AR.js for A-Frame (GPS-based AR) -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex-location-only.js"></script>
 </head>
-<body>
-<a-scene vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true'>
-    <a-camera gps-new-camera='gpsMinDistance: 5'></a-camera>
-    <a-entity material='color: red' geometry='primitive: box' gps-new-entity-place="latitude: 16.751806878946546; longitude: 100.19693426430625" scale="10 10 10"></a-entity>
-</a-scene>
+<body style="margin: 0; overflow: hidden;">
+    <!-- A-Frame Scene -->
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: true;">
+        <!-- โมเดล 3D จะปรากฏที่พิกัด GPS -->
+        <a-entity gps-entity-place="latitude:16.751788833126042; longitude:100.19693424709844;" 
+                  gltf-model="image/park.glb"  <!-- ใช้โมเดลของคุณเอง -->
+                  scale="1 1 1" 
+                  rotation="0 180 0">
+        </a-entity>
+        <a-camera gps-camera="gpsMinAccuracy: 100; positionMinAccuracy: 100;" rotation-reader></a-camera>
+    </a-scene>
 </body>
 </html>
