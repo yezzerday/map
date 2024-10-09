@@ -207,12 +207,19 @@
             dropdown.style.display = 'none';
             addMarkers(); 
         });
-
+        
         function navigateAR(placeName, coordinates) {
-            localStorage.setItem('destination', JSON.stringify({ name: placeName, coordinates: coordinates }));
-            window.location.href = 'ARNavigate.html'; 
-        } 
+    alert('Navigating to ' + placeName + ' at coordinates: ' + coordinates);
 
+    if (window.unityBridge && window.unityBridge.send) {
+        window.unityBridge.send(JSON.stringify({
+            place: placeName,
+            coordinates: coordinates
+        }));
+    } else {
+        console.log("Unity bridge not found. Coordinates:", coordinates);
+    }
+}
     </script>
 </body>
 </html>
