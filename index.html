@@ -231,12 +231,13 @@
         });
 
         function navigateAR(placeName, coordinates) {
-            window.location.href = `ar.html?name=${encodeURIComponent(placeName)}&lng=${coordinates[0]}&lat=${coordinates[1]}`;
+            window.location.href = `AR.html?name=${encodeURIComponent(placeName)}&lng=${coordinates[0]}&lat=${coordinates[1]}`;
         }
 
         function navigateRoute(placeName, coordinates) {
             // ฟังก์ชันสำหรับปุ่มเส้นทาง (สามารถปรับปรุงเพิ่มเติมได้)
             alert(`นำทางไปยัง ${placeName}`);
+            // คุณสามารถใช้ Mapbox Directions API เพื่อแสดงเส้นทางได้ที่นี่
         }
    
     </script>
