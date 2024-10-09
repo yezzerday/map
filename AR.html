@@ -12,7 +12,7 @@
         <a-marker-camera preset="gps"></a-marker-camera>
         
         <!-- เพิ่มโมเดลต่าง ๆ ที่นี่ -->
-        <a-entity id="ar-model" position="0 0 0"></a-entity>
+        <a-entity id="ar-model" position="0 0 0 -10"></a-entity>
     </a-scene>
 
     <script>
@@ -27,11 +27,11 @@
             switch(id) {
                 case '1':
                     arModel.setAttribute('gltf-model', 'url(image/bank.glb)');
-                    arModel.setAttribute('scale', '2 2 2');
+                    arModel.setAttribute('scale', '1 1 1');
                     break;
                 case '2':
                     arModel.setAttribute('gltf-model', 'url(image/education.glb)');
-                    arModel.setAttribute('scale', '1.5 1.5 1.5');
+                    arModel.setAttribute('scale', '1 1 1');
                     break;
                 case '3':
                     arModel.setAttribute('gltf-model', 'url(image/park.glb)');
