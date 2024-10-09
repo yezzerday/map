@@ -1,37 +1,25 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AR สำหรับสถานที่</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- A-Frame -->
+    <title>AR Location Web</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <!-- AR.js for A-Frame -->
-    <script src="https://cdn.rawgit.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
-        body { margin: 0; overflow: hidden; }
-        #back-button {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 10px 20px;
-            background-color: rgba(255, 255, 255, 0.7);
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 2;
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
         }
     </style>
 </head>
 <body>
-    <button id="back-button" onclick="goBack()">กลับ</button>
-    <a-scene embedded arjs>
-        <a-marker preset="hiro">
-            <!-- เนื้อหา AR จะถูกเพิ่มผ่าน JavaScript -->
-        </a-marker>
-        <a-entity camera></a-entity>
-    </a-scene>
-
+    <a-scene vr-mode-ui="enabled: false" arjs="sourceType: webcam; debugUIEnabled: false">
+        <a-camera gps-camera rotation-reader></a-camera>
+<button id="back-button" onclick="goBack()">กลับ</button>
     <script>
         // ฟังก์ชันในการอ่านพารามิเตอร์จาก URL
         function getQueryParams() {
