@@ -1,79 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR Location Web</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
-    </style>
-</head>
-<body>
-    <a-scene vr-mode-ui="enabled: false" arjs="sourceType: webcam; debugUIEnabled: false">
-        <a-camera gps-camera rotation-reader></a-camera>
-<button id="back-button" onclick="goBack()">กลับ</button>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>GeoAR.js demo</title>
+    <script src='https://aframe.io/releases/0.9.2/aframe.min.js'></script>
+    <script src="https://raw.githack.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
     <script>
-        // ฟังก์ชันในการอ่านพารามิเตอร์จาก URL
-        function getQueryParams() {
-            const params = {};
-            window.location.search.substring(1).split("&").forEach(pair => {
-                const [key, value] = pair.split("=");
-                params[decodeURIComponent(key)] = decodeURIComponent(value || '');
-            });
-            return params;
-        }
-
-        const params = getQueryParams();
-        const placeName = params.name || 'สถานที่';
-        const lng = parseFloat(params.lng) || 100.19424882682976;
-        const lat = parseFloat(params.lat) || 16.74518953316748;
-
-        const scene = document.querySelector('a-scene');
-        const marker = document.querySelector('a-marker');
-
-        // ฟังก์ชันในการเพิ่มเนื้อหา AR ตามสถานที่
-        function addARContent(placeName) {
-            switch(placeName) {
-                case 'ลานพระบรมราชานุสาวรีย์สมเด็จพระนเรศวรมหาราช':
-                    const model1 = document.createElement('a-entity');
-                    model1.setAttribute('gltf-model', 'image/park.glb'); // เปลี่ยนเป็น URL ของโมเดล
-                    model1.setAttribute('scale', '0.5 0.5 0.5');
-                    model1.setAttribute('position', '0 0 0');
-                    marker.appendChild(model1);
-                    break;
-                case 'ศูนย์หนังสือจุฬา สาขามหาวิทยาลัยนเรศวร':
-                    const model2 = document.createElement('a-entity');
-                    model2.setAttribute('gltf-model', 'image/book.glb'); // เปลี่ยนเป็น URL ของโมเดล
-                    model2.setAttribute('scale', '0.5 0.5 0.5');
-                    model2.setAttribute('position', '0 0 0');
-                    marker.appendChild(model2);
-                    break;
-                // เพิ่มกรณีอื่น ๆ ตามต้องการ
-                default:
-                    const defaultText = document.createElement('a-text');
-                    defaultText.setAttribute('value', `ยินดีต้อนรับสู่ ${placeName}`);
-                    defaultText.setAttribute('position', '0 1 0');
-                    defaultText.setAttribute('color', '#00FF00');
-                    defaultText.setAttribute('align', 'center');
-                    marker.appendChild(defaultText);
-            }
-        }
-
-        // เรียกใช้ฟังก์ชันเพื่อเพิ่มเนื้อหา AR ตามสถานที่
-        addARContent(placeName);
-
-        // ฟังก์ชันสำหรับปุ่มกลับ
-        function goBack() {
-            window.history.back();
-        }
+        THREEx.ArToolkitContext.baseURL = 'https://raw.githack.com/jeromeetienne/ar.js/master/three.js/'
     </script>
+</head>
+
+<script src="./script.js"></script>
+<body style='margin: 0; overflow: hidden;'>
+    <a-scene
+       vr-mode-ui="enabled: false"
+		embedded
+        arjs='sourceType: webcam; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960; debugUIEnabled: false;'>
+        <a-camera gps-camera rotation-reader>
+		</a-camera>
+	</a-scene>
 </body>
-</html>
+    window.onload = () => {
+     let places = staticLoadPlaces();
+     renderPlaces(places);
+};
+
+function staticLoadPlaces() {
+    return [
+        {
+            name: 'Magnemite',
+            location: {
+                lat: 44.496470,
+                lng: 11.320180,
+            }
+        },
+    ];
+}
+
+function renderPlaces(places) {
+    let scene = document.querySelector('a-scene');
+
+    places.forEach((place) => {
+        let latitude = place.location.lat;
+        let longitude = place.location.lng;
+
+        let model = document.createElement('a-entity');
+        model.setAttribute('gps-entity-place', `latitude: ${latitude}; longitude: ${longitude};`);
+        model.setAttribute('gltf-model', './assets/magnemite/scene.gltf');
+        model.setAttribute('rotation', '0 180 0');
+        model.setAttribute('animation-mixer', '');
+        model.setAttribute('scale', '0.5 0.5 0.5');
+
+        model.addEventListener('loaded', () => {
+            window.dispatchEvent(new CustomEvent('gps-entity-place-loaded'))
+        });
+
+        scene.appendChild(model);
+    });
+}
