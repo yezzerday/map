@@ -232,17 +232,14 @@
             addMarkers(); 
         });
 
-        // ฟังก์ชัน navigateAR
-        function navigateAR(placeId, placeName, coordinates) {
-            window.location.href = `AR.html?id=${placeId}&name=${encodeURIComponent(placeName)}&lng=${coordinates[0]}&lat=${coordinates[1]}`;
-        }
+        function navigateAR(id, name, coordinates) {
+    // สร้าง URL ที่ส่งพิกัดและชื่อสถานที่ไปยังหน้า AR
+    var arUrl = `AR.html?id=${id}&name=${encodeURIComponent(name)}&lat=${coordinates[1]}&lng=${coordinates[0]}`;
+    
+    // ไปยังหน้า AR
+    window.location.href = arUrl;
+}
 
-        // ฟังก์ชัน navigateRoute
-        function navigateRoute(placeName, coordinates) {
-            // ฟังก์ชันสำหรับปุ่มเส้นทาง (สามารถปรับปรุงเพิ่มเติมได้)
-            alert(`นำทางไปยัง ${placeName}`);
-            // คุณสามารถใช้ Mapbox Directions API เพื่อแสดงเส้นทางได้ที่นี่
-        }
    
     </script>
 </body>
