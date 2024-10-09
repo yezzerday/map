@@ -3,22 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple AR Test</title>
-    <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <!-- AR.js for A-Frame (GPS-based AR) -->
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex-location-only.js"></script>
+    <title>AR View</title>
 </head>
-<body style="margin: 0; overflow: hidden;">
-    <!-- A-Frame Scene -->
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: true;">
-        <!-- โมเดล 3D จะปรากฏที่พิกัด GPS -->
-        <a-entity gps-entity-place="latitude:16.751788833126042; longitude:100.19693424709844;" 
-                  gltf-model="image/park.glb"  <!-- ใช้โมเดลของคุณเอง -->
-                  scale="1 1 1" 
-                  rotation="0 180 0">
-        </a-entity>
-        <a-camera gps-camera="gpsMinAccuracy: 100; positionMinAccuracy: 100;" rotation-reader></a-camera>
+<body>
+    <a-scene embedded arjs>
+        <!-- กล้อง AR -->
+        <a-marker-camera preset="gps"></a-marker-camera>
+        
+        <!-- เพิ่มโมเดลต่าง ๆ ที่นี่ -->
+        <a-entity id="ar-model" position="0 0 0"></a-entity>
     </a-scene>
+
+    <script>
+        // รับ id สถานที่จาก URL
+        const params = new URLSearchParams(window.location.search);
+        const placeId = params.get('id');
+
+        // ฟังก์ชันเพื่อแสดงโมเดลตาม id
+        function displayModel(id) {
+            const arModel = document.getElementById('ar-model');
+
+            switch(id) {
+                case '1':
+                    arModel.setAttribute('gltf-model', 'url(image/bank.glb)');
+                    arModel.setAttribute('scale', '2 2 2');
+                    break;
+                case '2':
+                    arModel.setAttribute('gltf-model', 'url(image/education.glb)');
+                    arModel.setAttribute('scale', '1.5 1.5 1.5');
+                    break;
+                case '3':
+                    arModel.setAttribute('gltf-model', 'url(image/park.glb)');
+                    arModel.setAttribute('scale', '1 1 1');
+                    break;
+                // เพิ่มเคสเพิ่มเติมตามจำนวนโมเดลที่คุณมี
+                default:
+                    console.log('No model found for this place ID.');
+                    break;
+            }
+        }
+
+        // แสดงโมเดลที่ตรงกับ id
+        displayModel(placeId);
+    </script>
 </body>
 </html>
