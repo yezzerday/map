@@ -150,6 +150,7 @@
                     .setPopup(new mapboxgl.Popup().setHTML(`
                         <h3>${place.name}</h3>
                         <img src="${place.image}" alt="${place.name}" style="width: 100%; height: auto;" />
+                         <button style="float: left;" onclick="navigateAR('${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">AR</button>
                         <button style="float: right;" onclick="navigateAR('${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">เส้นทาง</button>
                     `))
                     .addTo(map);
