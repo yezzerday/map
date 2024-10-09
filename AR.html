@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>AR สำหรับสถานที่</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <!-- AR.js for A-Frame -->
+    <script src="https://cdn.rawgit.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        #back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <button id="back-button" onclick="goBack()">กลับ</button>
+    <a-scene embedded arjs>
+        <a-marker preset="hiro">
+            <!-- เนื้อหา AR จะถูกเพิ่มผ่าน JavaScript -->
+        </a-marker>
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+        // ฟังก์ชันในการอ่านพารามิเตอร์จาก URL
+        function getQueryParams() {
+            const params = {};
+            window.location.search.substring(1).split("&").forEach(pair => {
+                const [key, value] = pair.split("=");
+                params[decodeURIComponent(key)] = decodeURIComponent(value || '');
+            });
+            return params;
+        }
+
+        const params = getQueryParams();
+        const placeName = params.name || 'สถานที่';
+        const lng = parseFloat(params.lng) || 100.19424882682976;
+        const lat = parseFloat(params.lat) || 16.74518953316748;
+
+        const scene = document.querySelector('a-scene');
+        const marker = document.querySelector('a-marker');
+
+        // ฟังก์ชันในการเพิ่มเนื้อหา AR ตามสถานที่
+        function addARContent(placeName) {
+            switch(placeName) {
+                case 'ลานพระบรมราชานุสาวรีย์สมเด็จพระนเรศวรมหาราช':
+                    const model1 = document.createElement('a-entity');
+                    model1.setAttribute('gltf-model', 'image/park.glb'); // เปลี่ยนเป็น URL ของโมเดล
+                    model1.setAttribute('scale', '0.5 0.5 0.5');
+                    model1.setAttribute('position', '0 0 0');
+                    marker.appendChild(model1);
+                    break;
+                case 'ศูนย์หนังสือจุฬา สาขามหาวิทยาลัยนเรศวร':
+                    const model2 = document.createElement('a-entity');
+                    model2.setAttribute('gltf-model', 'image/book.glb'); // เปลี่ยนเป็น URL ของโมเดล
+                    model2.setAttribute('scale', '0.5 0.5 0.5');
+                    model2.setAttribute('position', '0 0 0');
+                    marker.appendChild(model2);
+                    break;
+                // เพิ่มกรณีอื่น ๆ ตามต้องการ
+                default:
+                    const defaultText = document.createElement('a-text');
+                    defaultText.setAttribute('value', `ยินดีต้อนรับสู่ ${placeName}`);
+                    defaultText.setAttribute('position', '0 1 0');
+                    defaultText.setAttribute('color', '#00FF00');
+                    defaultText.setAttribute('align', 'center');
+                    marker.appendChild(defaultText);
+            }
+        }
+
+        // เรียกใช้ฟังก์ชันเพื่อเพิ่มเนื้อหา AR ตามสถานที่
+        addARContent(placeName);
+
+        // ฟังก์ชันสำหรับปุ่มกลับ
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>
