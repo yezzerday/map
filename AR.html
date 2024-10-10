@@ -1,41 +1,49 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AR Viewer</title>
-    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <meta charset="utf-8">
+    <title>AR View</title>
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; }
+        #ar-container { width: 100vw; height: 100vh; }
+    </style>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.js"></script>
 </head>
 <body>
-    <!-- ตัวแสดงโมเดล AR -->
-    <model-viewer id="arViewer" src="" alt="โมเดล AR"
-      ar ar-modes="webxr scene-viewer"
-      environment-image="neutral"
-      auto-rotate camera-controls>
-    </model-viewer>
+    <div id="ar-container">
+        <a-scene embedded arjs='sourceType: webcam;'>
+            <!-- ตำแหน่งและโมเดลจะถูกเปลี่ยนตามสถานที่ที่ถูกเลือก -->
+            <a-entity 
+                id="model" 
+                gltf-model="" 
+                scale="0.5 0.5 0.5" 
+                rotation="-90 0 0">
+            </a-entity>
+            <a-entity camera></a-entity>
+        </a-scene>
+    </div>
 
     <script>
-        // รับพารามิเตอร์จาก URL
+        // ดึงพารามิเตอร์จาก URL
         const urlParams = new URLSearchParams(window.location.search);
-        const placeId = urlParams.get('id');
+        const id = urlParams.get('id');
 
-        // สร้างรายการโมเดลสำหรับสถานที่ต่าง ๆ
-        const models = {
+        // สร้างอาร์เรย์ที่เก็บโมเดลและตำแหน่งของสถานที่แต่ละแห่ง
+        const placesModels = {
             1: 'image/park.glb',
             2: 'image/parking.glb',
-            3: 'image/hospital.glb',
-            4: 'image/education.glb',
-            5: 'image/food.glb',
-            // เพิ่มโมเดลสำหรับสถานที่อื่น ๆ ที่นี่
+            3: 'image/food.glb',
+            // เพิ่มโมเดลสำหรับสถานที่อื่นๆ ตามที่คุณต้องการ
         };
 
-        // ตรวจสอบว่า placeId มีอยู่ในรายการโมเดลหรือไม่
-        if (models[placeId]) {
-            document.getElementById('arViewer').src = models[placeId];
+        // ตรวจสอบว่า id ที่รับมา มีโมเดลที่ตรงกับ id นั้นหรือไม่
+        if (placesModels[id]) {
+            document.getElementById('model').setAttribute('gltf-model', placesModels[id]);
         } else {
-            alert('ไม่พบโมเดลสำหรับสถานที่นี้');
-            // อาจเพิ่มการกระทำเมื่อไม่พบโมเดล เช่น ส่งผู้ใช้กลับไปยังหน้า Webmap.html
+            console.error('โมเดลสำหรับสถานที่นี้ไม่พบ');
         }
+
     </script>
 </body>
 </html>
