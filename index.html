@@ -232,13 +232,14 @@
             addMarkers(); 
         });
 
-       function navigateAR(id, name) {
-    // นำผู้ใช้ไปยังหน้า AR และส่งพารามิเตอร์ id สถานที่
-    window.location.href = `AR.html?id=${id}&name=${encodeURIComponent(name)}`;
+      function navigateAR(id, name, coordinates) {
+    if (id && name && coordinates) {
+        window.open(`AR.html?id=${id}`, '_blank');
+    } else {
+        alert("ข้อมูลไม่เพียงพอสำหรับการเข้าสู่ AR");
+    }
 }
 
-
-   
     </script>
 </body>
 </html>
