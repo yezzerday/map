@@ -178,6 +178,7 @@
                     .setPopup(new mapboxgl.Popup().setHTML(`
                         <div class="popup-content">
                             <h3>${place.name}</h3>
+                            <img src="${place.image}" alt="${place.name}" style="width: 100%; height: auto;" />
                             <button class="popup-button-ar" onclick="goToAR(${place.id}, '${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">AR</button>
                             <button class="popup-button-route" onclick="navigateAR(${place.id}, '${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">ARNavigate</button>
                         </div>
