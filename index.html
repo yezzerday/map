@@ -163,15 +163,13 @@
             {id: 65, name: 'ธนาคารกสิกรไทย', coordinates: [ 100.19899656512207,16.736972925746034 ], image: 'https://upload.wikimedia.org/wikipedia/th/d/d6/KBANK.png' }, 
         ];
 
-        function addMarkers() {
+       function addMarkers() {
             places.forEach(function(place) {
                 var marker = new mapboxgl.Marker()
                     .setLngLat(place.coordinates)
                     .setPopup(new mapboxgl.Popup().setHTML(`
                         <h3>${place.name}</h3>
-                        <img src="${place.image}" alt="${place.name}" style="width: 100%; height: auto;" />
                         <button class="popup-button-ar" onclick="navigateAR(${place.id}, '${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">AR</button>
-                        <button class="popup-button-route" onclick="navigateRoute('${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">เส้นทาง</button>
                     `))
                     .addTo(map);
 
@@ -181,7 +179,6 @@
 
         addMarkers();
 
-        // การค้นหา
         document.getElementById('search-input').addEventListener('input', function() {
             var query = document.getElementById('search-input').value.toLowerCase();
             if (query.trim() === '') {
@@ -206,9 +203,7 @@
                             .setLngLat(place.coordinates)
                             .setPopup(new mapboxgl.Popup().setHTML(`
                                 <h3>${place.name}</h3>
-                                <img src="${place.image}" alt="${place.name}" style="width: 100%; height: auto;" />
                                 <button class="popup-button-ar" onclick="navigateAR(${place.id}, '${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">AR</button>
-                                <button class="popup-button-route" onclick="navigateRoute('${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">เส้นทาง</button>
                             `))
                             .addTo(map);
 
@@ -229,16 +224,14 @@
             markers = [];
             document.getElementById('search-input').value = '';
             dropdown.style.display = 'none';
-            addMarkers(); 
+            addMarkers();
         });
 
-      function navigateAR(id, name, coordinates) {
-    if (id && name && coordinates) {
-        window.open(`AR.html?id=${id}`, '_blank');
-    } else {
-        alert("ข้อมูลไม่เพียงพอสำหรับการเข้าสู่ AR");
-    }
-}
+        // ฟังก์ชันสำหรับนำทางไปยังหน้า AR
+        function navigateAR(id, name, coordinates) {
+            window.location.href = `AR.html?id=${id}`;
+        }
+    </script>
 
     </script>
 </body>
