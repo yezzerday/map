@@ -176,9 +176,11 @@
                 var marker = new mapboxgl.Marker()
                     .setLngLat(place.coordinates)
                     .setPopup(new mapboxgl.Popup().setHTML(`
-                        <h3>${place.name}</h3>
-                        <img src="${place.image}" alt="${place.name}" style="width: 100%; height: auto;" />
-                        <button style="float: right;" onclick="navigateAR('${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">เส้นทาง</button>
+                        <div class="popup-content">
+                            <h3>${place.name}</h3>
+                            <button class="popup-button-ar" onclick="goToAR(${place.id}, '${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">AR</button>
+                            <button class="popup-button-route" onclick="navigateAR(${place.id}, '${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">ARNavigate</button>
+                        </div>
                     `))
                     .addTo(map);
 
@@ -188,6 +190,7 @@
 
         addMarkers();
 
+        // การค้นหา
         document.getElementById('search-input').addEventListener('input', function() {
             var query = document.getElementById('search-input').value.toLowerCase();
             if (query.trim() === '') {
@@ -195,52 +198,40 @@
                 return;
             }
 
-            var filteredPlaces = places.filter(function(place) {
+            dropdown.innerHTML = '';
+            var results = places.filter(function(place) {
                 return place.name.toLowerCase().includes(query);
             });
 
-            dropdown.innerHTML = '';
-            if (filteredPlaces.length > 0) {
-                dropdown.style.display = 'block';
-                filteredPlaces.forEach(function(place) {
+            if (results.length > 0) {
+                results.forEach(function(place) {
                     var div = document.createElement('div');
                     div.textContent = place.name;
                     div.addEventListener('click', function() {
-                        markers.forEach(marker => marker.remove());
-
-                        var newMarker = new mapboxgl.Marker()
-                            .setLngLat(place.coordinates)
-                            .setPopup(new mapboxgl.Popup().setHTML(`
-                                <h3>${place.name}</h3>
-                                <img src="${place.image}" alt="${place.name}" style="width: 100%; height: auto;" />
-                                <button style="float: right;" onclick="navigateAR('${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">เส้นทาง AR</button>
-                            `))
-                            .addTo(map);
-
-                        markers.push(newMarker);
-                        map.flyTo({ center: place.coordinates, zoom: 15 });
+                        map.flyTo({ center: place.coordinates });
                         dropdown.style.display = 'none';
                     });
                     dropdown.appendChild(div);
                 });
+                dropdown.style.display = 'block';
             } else {
                 dropdown.style.display = 'none';
             }
         });
 
         document.getElementById('clear-button').addEventListener('click', function() {
-            markers.forEach(marker => marker.remove());
-            markers = [];
             document.getElementById('search-input').value = '';
             dropdown.style.display = 'none';
-            addMarkers(); 
         });
 
-        function navigateAR(placeName, coordinates) {
-            localStorage.setItem('destination', JSON.stringify({ name: placeName, coordinates: coordinates }));
-            window.location.href = 'ARNavigate.html'; 
-        } 
+        function goToAR(id, name, coordinates) {
+            window.location.href = `AR.html?id=${id}&name=${encodeURIComponent(name)}&coordinates=${coordinates.join(',')}`;
+        }
 
+        function navigateAR(id, name, coordinates) {
+            // Implement AR navigation logic here
+            alert(`Navigating to ${name} (ID: ${id}) with coordinates: ${coordinates}`);
+        }
     </script>
 </body>
 </html>
