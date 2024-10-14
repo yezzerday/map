@@ -210,17 +210,8 @@
 
         function navigateAR(placeName, coordinates) {
     alert('Navigating to ' + placeName + ' at coordinates: ' + coordinates);
-
-    // เรียกใช้ Unity เพื่อส่งข้อมูลพิกัด
-    if (window.unityBridge && window.unityBridge.send) {
-        window.unityBridge.send(JSON.stringify({
-            place: placeName,
-            coordinates: coordinates
-        }));
-    } else {
-        console.log("Unity bridge not found. Coordinates:", coordinates);
-    }
-}
+            window.location.href = `Map Route.html?id=${id}&name=${encodeURIComponent(name)}&coordinates=${coordinates.join(',')}`;
+        }
     </script>
 </body>
 </html>
