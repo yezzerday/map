@@ -143,75 +143,87 @@
             {id: 64, name: 'ธนาคารกสิกรไทย', coordinates: [ 100.19899656512207,16.736972925746034 ], image: 'https://upload.wikimedia.org/wikipedia/th/d/d6/KBANK.png' }, 
         ];
 
-        function addMarkers() {
-            places.forEach(function(place) {
-                var marker = new mapboxgl.Marker()
+       function addMarkers() {
+    places.forEach(function(place) {
+        var marker = new mapboxgl.Marker()
+            .setLngLat(place.coordinates)
+            .setPopup(new mapboxgl.Popup().setHTML(`
+                <h3>${place.name}</h3>
+                <img src="${place.image}" alt="${place.name}" style="width: 100%; height: auto;" />
+                <button style="float: right;" onclick="navigateAR(${place.id})">เส้นทาง</button>
+            `))
+            .addTo(map);
+
+        markers.push(marker);
+    });
+}
+
+addMarkers();
+
+document.getElementById('search-input').addEventListener('input', function() {
+    var query = document.getElementById('search-input').value.toLowerCase();
+    if (query.trim() === '') {
+        dropdown.style.display = 'none';
+        return;
+    }
+
+    var filteredPlaces = places.filter(function(place) {
+        return place.name.toLowerCase().includes(query);
+    });
+
+    dropdown.innerHTML = '';
+    if (filteredPlaces.length > 0) {
+        dropdown.style.display = 'block';
+        filteredPlaces.forEach(function(place) {
+            var div = document.createElement('div');
+            div.textContent = place.name;
+            div.addEventListener('click', function() {
+                markers.forEach(marker => marker.remove());
+
+                var newMarker = new mapboxgl.Marker()
                     .setLngLat(place.coordinates)
                     .setPopup(new mapboxgl.Popup().setHTML(`
                         <h3>${place.name}</h3>
                         <img src="${place.image}" alt="${place.name}" style="width: 100%; height: auto;" />
-                        <button style="float: right;" onclick="navigateAR('${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">เส้นทาง</button>
+                        <button style="float: right;" onclick="navigateAR(${place.id})">เส้นทาง</button>
                     `))
                     .addTo(map);
 
-                markers.push(marker);
-            });
-        }
-
-        addMarkers();
-
-        document.getElementById('search-input').addEventListener('input', function() {
-            var query = document.getElementById('search-input').value.toLowerCase();
-            if (query.trim() === '') {
+                markers.push(newMarker);
+                map.flyTo({ center: place.coordinates, zoom: 15 });
                 dropdown.style.display = 'none';
-                return;
-            }
-
-            var filteredPlaces = places.filter(function(place) {
-                return place.name.toLowerCase().includes(query);
             });
-
-            dropdown.innerHTML = '';
-            if (filteredPlaces.length > 0) {
-                dropdown.style.display = 'block';
-                filteredPlaces.forEach(function(place) {
-                    var div = document.createElement('div');
-                    div.textContent = place.name;
-                    div.addEventListener('click', function() {
-                        markers.forEach(marker => marker.remove());
-
-                        var newMarker = new mapboxgl.Marker()
-                            .setLngLat(place.coordinates)
-                            .setPopup(new mapboxgl.Popup().setHTML(`
-                                <h3>${place.name}</h3>
-                                <img src="${place.image}" alt="${place.name}" style="width: 100%; height: auto;" />
-                                <button style="float: right;" onclick="navigateAR('${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">เส้นทาง AR</button>
-                            `))
-                            .addTo(map);
-
-                        markers.push(newMarker);
-                        map.flyTo({ center: place.coordinates, zoom: 15 });
-                        dropdown.style.display = 'none';
-                    });
-                    dropdown.appendChild(div);
-                });
-            } else {
-                dropdown.style.display = 'none';
-            }
+            dropdown.appendChild(div);
         });
-
-        document.getElementById('clear-button').addEventListener('click', function() {
-            markers.forEach(marker => marker.remove());
-            markers = [];
-            document.getElementById('search-input').value = '';
-            dropdown.style.display = 'none';
-            addMarkers(); 
-        });
-        
-        function navigateAR(id) {
-        alert('Navigating to : ' + id);
-        window.location.href = `Map Route.html?id=${id}`;
+    } else {
+        dropdown.style.display = 'none';
     }
+});
+
+document.getElementById('clear-button').addEventListener('click', function() {
+    markers.forEach(marker => marker.remove());
+    markers = [];
+    document.getElementById('search-input').value = '';
+    dropdown.style.display = 'none';
+    addMarkers(); 
+});
+
+function navigateAR(id) {
+    alert('Navigating to: ' + id);
+    // เปลี่ยนไปยัง HTML ตาม id
+    switch (id) {
+        case 1:
+            window.location.href = 'Map Route.html';
+            break;
+        case 2:
+            window.location.href = 'คณะแพทยศาสตร์.html';
+            break;
+        // ... เพิ่มกรณีสำหรับ id อื่น ๆ ตามที่คุณต้องการ
+        default:
+            window.location.href = 'default.html'; // ถ้าไม่ตรงกับ id ใด ๆ
+    }
+}
+
     </script>
 </body>
 </html>
