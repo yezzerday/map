@@ -208,10 +208,10 @@
             addMarkers(); 
         });
 
-        function navigateAR(placeName, coordinates) {
+       function navigateAR(placeName, coordinates) {
     alert('Navigating to ' + placeName + ' at coordinates: ' + coordinates);
-            window.location.href = `Map Route.html?id=${id}&name=${encodeURIComponent(name)}&coordinates=${coordinates.join(',')}`;
-        }
+    window.location.href = `Map Route.html?name=${encodeURIComponent(placeName)}&coordinates=${coordinates.join(',')}`;
+}
     </script>
 </body>
 </html>
