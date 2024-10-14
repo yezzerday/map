@@ -167,72 +167,73 @@
             {id: 65, name: 'ธนาคารกสิกรไทย', coordinates: [ 100.19899656512207,16.736972925746034 ], image: 'https://upload.wikimedia.org/wikipedia/th/d/d6/KBANK.png' }, 
         ];
 
-        function addMarkers() { 
-    places.forEach(function(place) {
-        var marker = new mapboxgl.Marker()
-            .setLngLat(place.coordinates)
-            .setPopup(new mapboxgl.Popup().setHTML(`
-                <div class="popup-content">
-                    <h3>${place.name}</h3>
-                    <img src="${place.image}" alt="${place.name}" style="width: 100%; height: auto;" />
-                    <button class="popup-button-ar" onclick="goToAR(${place.id})">AR</button>
-                    <button class="popup-button-route" onclick="navigateAR(${place.id})">เส้นทาง</button>
-                </div>
-            `))
-            .addTo(map);
+        function addMarkers() {
+            places.forEach(function(place) {
+                var marker = new mapboxgl.Marker()
+                    .setLngLat(place.coordinates)
+                    .setPopup(new mapboxgl.Popup().setHTML(`
+                        <div class="popup-content">
+                            <h3>${place.name}</h3>
+                            <img src="${place.image}" alt="${place.name}" style="width: 100%; height: auto;" />
+                            <button class="popup-button-ar"  onclick="goToAR(${place.id}, '${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">AR</button>
+                            <button class="popup-button-route"  onclick="navigateAR(${place.id}, '${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">เส้นทาง</button>
+                        </div>
+                    `))
+                    .addTo(map);
 
-        markers.push(marker);
-    });
-}
-
-addMarkers();
-
-// ฟังก์ชันเปิด AR Scene
-function goToAR(id) {
-    window.location.href = 'unityapp://sceneA?id=' + id; // เปลี่ยน URL Scheme ให้ถูกต้อง
-}
-
-// ฟังก์ชันเปิด Route Scene
-function navigateAR(id) {
-    window.location.href = 'unityapp://sceneB?id=' + id; // เปลี่ยน URL Scheme ให้ถูกต้อง
-}
-
-// การค้นหา
-document.getElementById('search-input').addEventListener('input', function() {
-    var query = document.getElementById('search-input').value.toLowerCase();
-    if (query.trim() === '') {
-        dropdown.style.display = 'none';
-        return;
-    }
-
-    dropdown.innerHTML = '';
-    var results = places.filter(function(place) {
-        return place.name.toLowerCase().includes(query);
-    });
-
-    if (results.length > 0) {
-        results.forEach(function(place) {
-            var div = document.createElement('div');
-            div.textContent = place.name;
-            div.addEventListener('click', function() {
-                map.flyTo({ center: place.coordinates });
-                dropdown.style.display = 'none';
+                markers.push(marker);
             });
-            dropdown.appendChild(div);
+        }
+
+        addMarkers();
+
+        // การค้นหา
+        document.getElementById('search-input').addEventListener('input', function() {
+            var query = document.getElementById('search-input').value.toLowerCase();
+            if (query.trim() === '') {
+                dropdown.style.display = 'none';
+                return;
+            }
+
+            dropdown.innerHTML = '';
+            var results = places.filter(function(place) {
+                return place.name.toLowerCase().includes(query);
+            });
+
+            if (results.length > 0) {
+                results.forEach(function(place) {
+                    var div = document.createElement('div');
+                    div.textContent = place.name;
+                    div.addEventListener('click', function() {
+                        map.flyTo({ center: place.coordinates });
+                        dropdown.style.display = 'none';
+                    });
+                    dropdown.appendChild(div);
+                });
+                dropdown.style.display = 'block';
+            } else {
+                dropdown.style.display = 'none';
+            }
         });
-        dropdown.style.display = 'block';
-    } else {
-        dropdown.style.display = 'none';
-    }
-});
 
-document.getElementById('clear-button').addEventListener('click', function() {
-    document.getElementById('search-input').value = '';
-    dropdown.style.display = 'none';
-});
+        document.getElementById('clear-button').addEventListener('click', function() {
+            document.getElementById('search-input').value = '';
+            dropdown.style.display = 'none';
+        });
 
+        function goToAR(id, name, coordinates) {
+            window.location.href = `AR.html?id=${id}&name=${encodeURIComponent(name)}&coordinates=${coordinates.join(',')}`;
+        }
+
+        function navigateAR(id, name, coordinates) {
+            // Implement AR navigation logic here
+            alert(`Navigating to ${name} (ID: ${id}) with coordinates: ${coordinates}`);
+        }
+    </script>
 </body>
 </html>
+
+
 
 
 
