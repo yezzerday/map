@@ -171,14 +171,14 @@
             places.forEach(function(place) {
                 var marker = new mapboxgl.Marker()
                     .setLngLat(place.coordinates)
-                    .setPopup(new mapboxgl.Popup().setHTML(`
+                    .setPopup(new mapboxgl.Popup().setHTML(
                         <div class="popup-content">
                             <h3>${place.name}</h3>
                             <img src="${place.image}" alt="${place.name}" style="width: 100%; height: auto;" />
                             <button class="popup-button-ar"  onclick="goToAR(${place.id}, '${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">AR</button>
                             <button class="popup-button-route"  onclick="navigateAR(${place.id}, '${place.name}', [${place.coordinates[0]}, ${place.coordinates[1]}])">เส้นทาง</button>
                         </div>
-                    `))
+                    ))
                     .addTo(map);
 
                 markers.push(marker);
@@ -222,63 +222,9 @@
         });
 
         function goToAR(id, name, coordinates) {
-            window.location.href = `AR.html?id=${id}&name=${encodeURIComponent(name)}&coordinates=${coordinates.join(',')}`;
+            window.location.href = AR.html?id=${id}&name=${encodeURIComponent(name)}&coordinates=${coordinates.join(',')};
         }
-
-        // ฟังก์ชันคำนวณและแสดงเส้นทาง
-function navigateAR(destination) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-        const start = [position.coords.longitude, position.coords.latitude]; // พิกัดเริ่มต้นจากตำแหน่งปัจจุบัน
-
-        // เรียกใช้ Mapbox Directions API เพื่อคำนวณเส้นทาง
-        const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[0]},${start[1]};${destination[0]},${destination[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`;
         
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                const route = data.routes[0].geometry;
-
-                // ลบเส้นทางเก่าถ้ามี
-                if (map.getSource('route')) {
-                    map.removeLayer('route');
-                    map.removeSource('route');
-                }
-
-                // เพิ่มเส้นทางใหม่ลงบนแผนที่
-                map.addSource('route', {
-                    'type': 'geojson',
-                    'data': {
-                        'type': 'Feature',
-                        'geometry': route
-                    }
-                });
-
-                map.addLayer({
-                    'id': 'route',
-                    'type': 'line',
-                    'source': 'route',
-                    'layout': {
-                        'line-join': 'round',
-                        'line-cap': 'round'
-                    },
-                    'paint': {
-                        'line-color': '#3887be',
-                        'line-width': 5,
-                        'line-opacity': 0.75
-                    }
-                });
-
-                // เลื่อนแผนที่ไปยังจุดเริ่มต้นของเส้นทาง
-                map.flyTo({
-                    center: start,
-                    zoom: 14
-                });
-            })
-            .catch(error => console.error('Error fetching directions:', error));
-    });
-}
-
-
     </script>
 </body>
 </html>
