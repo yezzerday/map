@@ -1,88 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Markerless AR with WebXR</title>
-  <style>
-    body, html { margin: 0; padding: 0; overflow: hidden; }
-    canvas { display: block; }
-    #startButton {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      padding: 20px;
-      background-color: #28a745;
-      color: white;
-      font-size: 20px;
-      border: none;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-  <button id="startButton">Start AR</button>
-
-  <script type="module">
-    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
-
-    let scene, camera, renderer, controller;
-
-    async function initAR() {
-      if (navigator.xr) {
-        const session = await navigator.xr.requestSession('immersive-ar', {
-          requiredFeatures: ['hit-test', 'local-floor']
-        });
-
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
-
-        renderer = new THREE.WebGLRenderer({ alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.xr.enabled = true;
-        renderer.setAnimationLoop(render);
-        document.body.appendChild(renderer.domElement);
-
-        const xrRefSpace = await session.requestReferenceSpace('local');
-        const xrHitTestSource = await session.requestHitTestSource({ space: xrRefSpace });
-
-        controller = renderer.xr.getController(0);
-        scene.add(controller);
-
-        const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-        const cube = new THREE.Mesh(geometry, material);
-        cube.visible = false;
-        scene.add(cube);
-
-        session.addEventListener('select', (event) => {
-          const frame = event.frame;
-          const viewerPose = frame.getViewerPose(xrRefSpace);
-          if (viewerPose) {
-            const hitTestResults = frame.getHitTestResults(xrHitTestSource);
-            if (hitTestResults.length > 0) {
-              const hitPose = hitTestResults[0].getPose(xrRefSpace);
-              cube.position.set(hitPose.transform.position.x, hitPose.transform.position.y, hitPose.transform.position.z);
-              cube.visible = true;
-            }
-          }
-        });
-      } else {
-        alert("WebXR is not supported on this browser/device.");
-      }
-    }
-
-    function render() {
-      renderer.render(scene, camera);
-    }
-
-    // เริ่มต้น AR เมื่อผู้ใช้คลิกปุ่ม
-    document.getElementById('startButton').addEventListener('click', () => {
-      initAR();
-      document.getElementById('startButton').style.display = 'none'; // ซ่อนปุ่มเมื่อเริ่มต้น AR
-    });
-  </script>
-</body>
+<html>
+  <head>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+  </head>
+  <body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs>
+      <!-- โมเดลที่จะแสดง AR ทันที -->
+      <a-entity
+        gltf-model="url(image/park.glb)"  <!-- ใส่โมเดล 3D ของคุณในรูปแบบ .glb -->
+        position="0 1 0"  <!-- กำหนดตำแหน่งของโมเดล -->
+        scale="0.5 0.5 0.5">  <!-- ขนาดของโมเดล -->
+      </a-entity>
+      
+      <!-- กล้องสำหรับ AR -->
+      <a-camera gps-camera></a-camera>
+    </a-scene>
+  </body>
 </html>
 
