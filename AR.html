@@ -1,49 +1,19 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AR View</title>
-    <style>
-        body { margin: 0; padding: 0; overflow: hidden; }
-        #ar-container { width: 100vw; height: 100vh; }
-    </style>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.7.2/aframe/build/aframe-ar.js"></script>
 </head>
-<body>
-    <div id="ar-container">
-        <a-scene embedded arjs='sourceType: webcam;'>
-            <!-- ตำแหน่งและโมเดลจะถูกเปลี่ยนตามสถานที่ที่ถูกเลือก -->
-            <a-entity 
-                id="model" 
-                gltf-model="" 
-                scale="0.5 0.5 0.5" 
-                rotation="-90 0 0">
-            </a-entity>
-            <a-entity camera></a-entity>
-        </a-scene>
-    </div>
-
-    <script>
-        // ดึงพารามิเตอร์จาก URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id');
-
-        // สร้างอาร์เรย์ที่เก็บโมเดลและตำแหน่งของสถานที่แต่ละแห่ง
-        const placesModels = {
-            1: 'image/park.glb',
-            2: 'image/parking.glb',
-            3: 'image/food.glb',
-            // เพิ่มโมเดลสำหรับสถานที่อื่นๆ ตามที่คุณต้องการ
-        };
-
-        // ตรวจสอบว่า id ที่รับมา มีโมเดลที่ตรงกับ id นั้นหรือไม่
-        if (placesModels[id]) {
-            document.getElementById('model').setAttribute('gltf-model', placesModels[id]);
-        } else {
-            console.error('โมเดลสำหรับสถานที่นี้ไม่พบ');
-        }
-
-    </script>
+<body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs>
+        <a-marker preset="hiro">
+            <a-box position="0 0.5 0" material="color: yellow;"></a-box>
+        </a-marker>
+        <a-entity camera></a-entity>
+    </a-scene>
 </body>
 </html>
+
