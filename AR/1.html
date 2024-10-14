@@ -7,23 +7,34 @@
   <style>
     body, html { margin: 0; padding: 0; overflow: hidden; }
     canvas { display: block; }
+    #startButton {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      background-color: #28a745;
+      color: white;
+      font-size: 20px;
+      border: none;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
+  <button id="startButton">Start AR</button>
+
   <script type="module">
     import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js';
 
     let scene, camera, renderer, controller;
 
-    // ฟังก์ชันหลักในการเริ่มต้น WebXR
     async function initAR() {
-      // เช็คว่าเบราว์เซอร์รองรับ WebXR หรือไม่
       if (navigator.xr) {
         const session = await navigator.xr.requestSession('immersive-ar', {
           requiredFeatures: ['hit-test', 'local-floor']
         });
 
-        // ตั้งค่ากล้องและฉาก
         scene = new THREE.Scene();
         camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
 
@@ -33,22 +44,18 @@
         renderer.setAnimationLoop(render);
         document.body.appendChild(renderer.domElement);
 
-        // เริ่มต้น WebXR session
         const xrRefSpace = await session.requestReferenceSpace('local');
         const xrHitTestSource = await session.requestHitTestSource({ space: xrRefSpace });
 
-        // Controller สำหรับรับตำแหน่งที่แตะบนหน้าจอ
         controller = renderer.xr.getController(0);
         scene.add(controller);
 
-        // สร้างโมเดล Cube
         const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
         const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
         const cube = new THREE.Mesh(geometry, material);
         cube.visible = false;
         scene.add(cube);
 
-        // ฟังก์ชันการตรวจจับพื้นผิว (Hit Test)
         session.addEventListener('select', (event) => {
           const frame = event.frame;
           const viewerPose = frame.getViewerPose(xrRefSpace);
@@ -66,12 +73,16 @@
       }
     }
 
-    // ฟังก์ชัน render
     function render() {
       renderer.render(scene, camera);
     }
 
-    initAR();
+    // เริ่มต้น AR เมื่อผู้ใช้คลิกปุ่ม
+    document.getElementById('startButton').addEventListener('click', () => {
+      initAR();
+      document.getElementById('startButton').style.display = 'none'; // ซ่อนปุ่มเมื่อเริ่มต้น AR
+    });
   </script>
 </body>
 </html>
+
