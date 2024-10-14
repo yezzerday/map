@@ -150,7 +150,7 @@
             .setPopup(new mapboxgl.Popup().setHTML(`
                 <h3>${place.name}</h3>
                 <img src="${place.image}" alt="${place.name}" style="width: 100%; height: auto;" />
-                <button style="float: right;" onclick="navigateAR(${place.id})">เส้นทาง</button>
+                <button style="float: right;" onclick="navigateAR(${place.id}, '${place.name}')">เส้นทาง</button>
             `))
             .addTo(map);
 
@@ -185,7 +185,7 @@ document.getElementById('search-input').addEventListener('input', function() {
                     .setPopup(new mapboxgl.Popup().setHTML(`
                         <h3>${place.name}</h3>
                         <img src="${place.image}" alt="${place.name}" style="width: 100%; height: auto;" />
-                        <button style="float: right;" onclick="navigateAR(${place.id})">เส้นทาง</button>
+                        <button style="float: right;" onclick="navigateAR(${place.id}, '${place.name}')">เส้นทาง</button>
                     `))
                     .addTo(map);
 
@@ -208,21 +208,27 @@ document.getElementById('clear-button').addEventListener('click', function() {
     addMarkers(); 
 });
 
-function navigateAR(id,placeName) {
+function navigateAR(id, placeName) {
+    // แจ้งเตือนชื่อสถานที่
     alert('Navigating to: ' + placeName);
+
     // เปลี่ยนไปยัง HTML ตาม id
     switch (id) {
         case 1:
             window.location.href = 'maproute/1.html';
             break;
         case 2:
-            window.location.href = 'maproute/1.html';
+            window.location.href = 'maproute/2.html';
+            break;
+        case 3:
+            window.location.href = 'maproute/3.html';
             break;
         // ... เพิ่มกรณีสำหรับ id อื่น ๆ ตามที่คุณต้องการ
         default:
             window.location.href = 'default.html'; // ถ้าไม่ตรงกับ id ใด ๆ
     }
 }
+
 
     </script>
 </body>
