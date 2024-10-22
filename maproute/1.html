@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>คณะวิทยาศาสตร์การแพทย์</title>
+    <title>อาคารปราบไตรจักร</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
+    
     <style>
-      /* กำหนดความสูงของแผนที่ให้เต็มหน้าจอ */
       #map {
         height: 100vh;
         width: 100%;
       }
     </style>
-    <!-- โหลด Mapbox JavaScript และ CSS -->
+
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
     
@@ -27,7 +27,6 @@
           zoom: 14
         });
 
-        // เครื่องหมายปลายทาง
         new mapboxgl.Marker()
           .setLngLat(destination)
           .setPopup(new mapboxgl.Popup().setText("ปลายทาง"))
@@ -37,18 +36,16 @@
           navigator.geolocation.watchPosition(
             (position) => {
               const userLocation = [position.coords.longitude, position.coords.latitude];
-              const heading = position.coords.heading || 0; // ดึงค่าทิศทาง ถ้าไม่มีให้ใช้ 0
-
-              // ลบเครื่องหมายเก่า (ถ้ามี)
+              const heading = position.coords.heading || 0; 
+              
               if (window.userMarker) window.userMarker.remove();
-
-              // สร้างเครื่องหมายใหม่เป็นรูปไอคอนลูกศร
+              
               const userIcon = document.createElement('div');
               userIcon.style.width = '40px';
               userIcon.style.height = '40px';
-              userIcon.style.backgroundImage = 'url(https://path/to/arrow-icon.png)';
+              userIcon.style.backgroundImage = 'image/navigate.png';
               userIcon.style.backgroundSize = 'cover';
-              userIcon.style.transform = `rotate(${heading}deg)`; // หมุนตามทิศทางที่ผู้ใช้เคลื่อนที่
+              userIcon.style.transform = `rotate(${heading}deg)`;
 
               window.userMarker = new mapboxgl.Marker({ element: userIcon })
                 .setLngLat(userLocation)
