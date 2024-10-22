@@ -6,38 +6,19 @@
     <title>Mapbox Real-Time Navigation</title>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet" />
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v5.0.0/mapbox-gl-directions.js"></script>
-    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v5.0.0/mapbox-gl-directions.css" rel="stylesheet" />
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v5.2.0/mapbox-gl-directions.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v5.2.0/mapbox-gl-directions.css" rel="stylesheet" />
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-        #map {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 100%;
-        }
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
         .info-box {
             position: absolute;
             top: 10px;
             left: 10px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
             border-radius: 5px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             font-size: 16px;
-            z-index: 1;
-        }
-        .info-box h3 {
-            margin: 0 0 5px;
-            font-weight: bold;
-        }
-        .info-box p {
-            margin: 0;
-            font-size: 14px;
         }
     </style>
 </head>
@@ -50,7 +31,7 @@
     </div>
 
     <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiamFydWRhIiwiYSI6ImNtMDc5ZXViMDEzNGkya3NicGZzaGI1ZncifQ.N2tDCng_RYc0uCAymQ-LdA';
+        mapboxgl.accessToken = 'YOUR_MAPBOX_ACCESS_TOKEN';
 
         const map = new mapboxgl.Map({
             container: 'map',
@@ -59,26 +40,6 @@
             zoom: 15,
             pitch: 45,
             bearing: -17.6
-        });
-
-        map.on('load', () => {
-            map.addLayer({
-                'id': '3d-buildings',
-                'source': 'composite',
-                'source-layer': 'building',
-                'filter': ['==', 'extrude', 'true'],
-                'type': 'fill-extrusion',
-                'minzoom': 15,
-                'paint': {
-                    'fill-extrusion-color': '#aaa',
-                    'fill-extrusion-height': [
-                        'interpolate', ['linear'], ['zoom'],
-                        15, 0,
-                        16, ['get', 'height']
-                    ],
-                    'fill-extrusion-opacity': 0.6
-                }
-            });
         });
 
         const directions = new MapboxDirections({
@@ -91,42 +52,10 @@
 
         map.addControl(directions, 'top-left');
 
-        const markerElement = document.createElement('div');
-        markerElement.style.width = '30px';
-        markerElement.style.height = '30px';
-        markerElement.style.backgroundColor = '#3bb2d0';
-        markerElement.style.borderRadius = '50%';
-        const marker = new mapboxgl.Marker(markerElement)
+        const marker = new mapboxgl.Marker()
+            .setLngLat([100.19284494116692, 16.74818871714052])
             .addTo(map);
-
-        let lastKnownLngLat = null;
-
-        function updateMarkerPosition(position) {
-            const lngLat = [position.coords.longitude, position.coords.latitude];
-            marker.setLngLat(lngLat);
-            map.setCenter(lngLat);
-
-            // ตรวจสอบว่าผู้ใช้เดินออกจากเส้นทางหรือไม่
-            if (lastKnownLngLat) {
-                const distanceToRoute = mapboxgl.LngLat.convert(lngLat).distanceTo(mapboxgl.LngLat.convert(lastKnownLngLat));
-                if (distanceToRoute > 20) { // กำหนดระยะห่างที่ต้องการตรวจสอบ (20 เมตร)
-                    alert('คุณกำลังออกนอกเส้นทาง! กรุณากลับไปที่เส้นทางเดิม');
-                }
-            }
-
-            directions.setOrigin(lngLat);
-            lastKnownLngLat = lngLat; // อัปเดตตำแหน่งล่าสุด
-        }
-
-        navigator.geolocation.watchPosition(
-            updateMarkerPosition,
-            (error) => {
-                console.error('Error getting location:', error);
-                alert('ไม่สามารถเข้าถึงตำแหน่งของคุณได้');
-            },
-            { enableHighAccuracy: true } // ใช้ความแม่นยำสูง
-        );
-
+        
         directions.setDestination([100.19242605728084, 16.748116646474433]);
 
         directions.on('route', (e) => {
@@ -141,4 +70,3 @@
 
 </body>
 </html>
-
