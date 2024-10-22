@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>อาคารปราบไตรจักร</title>
+    <title>คณะวิทยาศาสตร์การแพทย์</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1, width=device-width" />
     <style>
@@ -27,6 +27,7 @@
           zoom: 14
         });
 
+        // เครื่องหมายปลายทาง
         new mapboxgl.Marker()
           .setLngLat(destination)
           .setPopup(new mapboxgl.Popup().setText("ปลายทาง"))
@@ -36,21 +37,31 @@
           navigator.geolocation.watchPosition(
             (position) => {
               const userLocation = [position.coords.longitude, position.coords.latitude];
+              const heading = position.coords.heading || 0; // ดึงค่าทิศทาง ถ้าไม่มีให้ใช้ 0
 
-              // ลบเครื่องหมายผู้ใช้เดิมถ้ามี
+              // ลบเครื่องหมายเก่า (ถ้ามี)
               if (window.userMarker) window.userMarker.remove();
 
-              // สร้างเครื่องหมายใหม่สำหรับตำแหน่งผู้ใช้
-              window.userMarker = new mapboxgl.Marker({ color: 'blue' })
+              // สร้างเครื่องหมายใหม่เป็นรูปไอคอนลูกศร
+              const userIcon = document.createElement('div');
+              userIcon.style.width = '40px';
+              userIcon.style.height = '40px';
+              userIcon.style.backgroundImage = 'url(https://path/to/arrow-icon.png)';
+              userIcon.style.backgroundSize = 'cover';
+              userIcon.style.transform = `rotate(${heading}deg)`; // หมุนตามทิศทางที่ผู้ใช้เคลื่อนที่
+
+              window.userMarker = new mapboxgl.Marker({ element: userIcon })
                 .setLngLat(userLocation)
                 .setPopup(new mapboxgl.Popup().setText("ตำแหน่งของคุณ"))
                 .addTo(map);
 
+              // ปรับแผนที่ให้ครอบคลุมทั้งผู้ใช้และปลายทาง
               const bounds = new mapboxgl.LngLatBounds();
               bounds.extend(userLocation);
               bounds.extend(destination);
               map.fitBounds(bounds);
 
+              // อัปเดตเส้นทาง
               getRoute(userLocation, destination, map);
             },
             () => {
