@@ -30,8 +30,7 @@
       
       function initMap() {
         const destination = [100.19372806238205, 16.74810722965741];
-        const destinationName = "อาคารปราบไตรจักร"; // ชื่อสถานที่ปลายทาง
-
+        const destinationName = "อาคารปราบไตรจักร"; 
         const map = new mapboxgl.Map({
           container: 'map',
           style: 'mapbox://styles/mapbox/streets-v11',
@@ -55,11 +54,11 @@
               userIcon.style.height = '40px';
               userIcon.style.backgroundImage = 'url(https://raw.githubusercontent.com/yezzerday/map/refs/heads/main/image/navigate.png)';
               userIcon.style.backgroundSize = 'cover';
-              userIcon.style.transform = `rotate(${heading}deg)`; // หมุนลูกศรตามทิศทาง
+              userIcon.style.transform = `rotate(${heading}deg)`; 
 
               if (window.userMarker) {
                 window.userMarker.setLngLat(userLocation);
-                userIcon.style.transform = `rotate(${heading}deg)`; // อัปเดตการหมุน
+                userIcon.style.transform = `rotate(${heading}deg)`; 
               } else {
                 window.userMarker = new mapboxgl.Marker({ element: userIcon })
                   .setLngLat(userLocation)
@@ -92,7 +91,7 @@
 
       // ฟังก์ชันคำนวณระยะทาง Haversine formula
       function calculateDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371e3; // รัศมีโลกเป็นเมตร
+        const R = 6371e3; 
         const φ1 = (lat1 * Math.PI) / 180;
         const φ2 = (lat2 * Math.PI) / 180;
         const Δφ = ((lat2 - lat1) * Math.PI) / 180;
@@ -103,8 +102,8 @@
           Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        const distance = R * c; // คำนวณระยะทางเป็นเมตร
-        return Math.round(distance); // ปัดเศษ
+        const distance = R * c; 
+        return Math.round(distance); 
       }
 
       async function getRoute(userLocation, destination, map) {
@@ -152,6 +151,6 @@
   </head>
   <body onload="initMap()">
     <div id="map"></div>
-    <div id="info">กำลังโหลดข้อมูล...</div> <!-- แสดงข้อมูลสถานที่และระยะทาง -->
+    <div id="info">กำลังโหลดข้อมูล...</div> 
   </body>
 </html>
