@@ -1,72 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Navigation</title>
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet" />
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v5.2.0/mapbox-gl-directions.js"></script>
-    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v5.2.0/mapbox-gl-directions.css" rel="stylesheet" />
-    <style>
-        body { margin: 0; padding: 0; }
-        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-        .info-box {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-    </style>
+<meta charset="utf-8">
+<title>Display navigation directions</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
 </head>
 <body>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.css" type="text/css">
+<div id="map"></div>
 
-    <div id="map"></div>
-    <div id="info" class="info-box">
-        <h3>0.0 km</h3>
-        <p>ถึงปลายทางใน N นาที</p>
-    </div>
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoiamFydWRhIiwiYSI6ImNtMDc5ZXViMDEzNGkya3NicGZzaGI1ZncifQ.N2tDCng_RYc0uCAymQ-LdA';
+    const map = new mapboxgl.Map({
+        container: 'map',
+        // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [-79.4512, 43.6568],
+        zoom: 13
+    });
 
-    <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiamFydWRhIiwiYSI6ImNtMDc5ZXViMDEzNGkya3NicGZzaGI1ZncifQ.N2tDCng_RYc0uCAymQ-LdA';
-
-        const map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v11',
-            center: [100.19284494116692, 16.74818871714052],
-            zoom: 15,
-            pitch: 45,
-            bearing: -17.6
-        });
-
-        const directions = new MapboxDirections({
-            accessToken: mapboxgl.accessToken,
-            unit: 'metric',
-            profile: 'mapbox/walking',
-            alternatives: false,
-            geometries: 'geojson'
-        });
-
-        map.addControl(directions, 'top-left');
-
-        const marker = new mapboxgl.Marker()
-            .setLngLat([100.19284494116692, 16.74818871714052])
-            .addTo(map);
-        
-        directions.setDestination([100.19242605728084, 16.748116646474433]);
-
-        directions.on('route', (e) => {
-            const route = e.route[0];
-            const distance = (route.distance / 1000).toFixed(1);
-            const duration = (route.duration / 60).toFixed(1);
-
-            document.querySelector('.info-box h3').textContent = `${distance} km`;
-            document.querySelector('.info-box p').textContent = `ถึงปลายทางใน ${duration} นาที`;
-        });
-    </script>
+    map.addControl(
+        new MapboxDirections({
+            accessToken: mapboxgl.accessToken
+        }),
+        'top-left'
+    );
+</script>
 
 </body>
 </html>
