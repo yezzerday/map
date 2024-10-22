@@ -1,38 +1,96 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>Display navigation directions</title>
-<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-<link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
-<style>
-body { margin: 0; padding: 0; }
-#map { position: absolute; top: 0; bottom: 0; width: 100%; }
-</style>
-</head>
-<body>
-<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.js"></script>
-<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.css" type="text/css">
-<div id="map"></div>
+  <head>
+    <title>คณะวิทยาศาสตร์การแพทย์</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <style>
+      /* กำหนดความสูงของแผนที่ให้เต็มหน้าจอ */
+      #map {
+        height: 100vh;
+        width: 100%;
+      }
+    </style>
+    <!-- โหลด Mapbox JavaScript และ CSS -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+	  
+    <script>
+      mapboxgl.accessToken = 'pk.eyJ1IjoiamFydWRhIiwiYSI6ImNtMDc5ZXViMDEzNGkya3NicGZzaGI1ZncifQ.N2tDCng_RYc0uCAymQ-LdA';
+      function initMap() {
+        const destination = [ 100.19372806238205,16.74810722965741];
+        const map = new mapboxgl.Map({
+          container: 'map',
+          style: 'mapbox://styles/mapbox/streets-v11',
+          center: destination,
+          zoom: 14
+        });
 
-<script>
-	mapboxgl.accessToken = 'pk.eyJ1IjoiamFydWRhIiwiYSI6ImNtMDc5ZXViMDEzNGkya3NicGZzaGI1ZncifQ.N2tDCng_RYc0uCAymQ-LdA';
-    const map = new mapboxgl.Map({
-        container: 'map',
-        // Choose from Mapbox's core styles, or make your own style with Mapbox Studio
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: [-79.4512, 43.6568],
-        zoom: 13
-    });
+        new mapboxgl.Marker()
+          .setLngLat(destination)
+          .setPopup(new mapboxgl.Popup().setText("ปลายทาง"))
+          .addTo(map);
 
-    map.addControl(
-        new MapboxDirections({
-            accessToken: mapboxgl.accessToken
-        }),
-        'top-left'
-    );
-</script>
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const userLocation = [position.coords.longitude, position.coords.latitude];
 
-</body>
+              new mapboxgl.Marker({ color: 'blue' })
+                .setLngLat(userLocation)
+                .setPopup(new mapboxgl.Popup().setText("ตำแหน่งของคุณ"))
+                .addTo(map);
+
+              const bounds = new mapboxgl.LngLatBounds();
+              bounds.extend(userLocation);
+              bounds.extend(destination);
+              map.fitBounds(bounds);
+
+              getRoute(userLocation, destination, map);
+            },
+            () => {
+              handleLocationError(true, map);
+            }
+          );
+        } else {
+          handleLocationError(false, map);
+        }
+      }
+	    
+      async function getRoute(userLocation, destination, map) {
+        const query = await fetch(
+          `https://api.mapbox.com/directions/v5/mapbox/driving/${userLocation.join(',')};${destination.join(',')}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+          { method: 'GET' }
+        );
+        const data = await query.json();
+        const route = data.routes[0].geometry;
+
+        map.addSource('route', {
+          type: 'geojson',
+          data: {
+            type: 'Feature',
+            properties: {},
+            geometry: route
+          }
+        });
+        map.addLayer({
+          id: 'route',
+          type: 'line',
+          source: 'route',
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: { 'line-color': '#3887be', 'line-width': 5 }
+        });
+      }
+      function handleLocationError(browserHasGeolocation, map) {
+        alert(
+          browserHasGeolocation
+            ? "บริการ Geolocation ล้มเหลว กรุณาเปิดใช้งาน Geolocation ในเบราว์เซอร์ของคุณ."
+            : "เบราว์เซอร์ ของคุณ ไม่รองรับ Geolocation."
+        );
+      }
+    </script>
+  </head>
+  <body onload="initMap()">
+    <div id="map"></div>
+  </body>
 </html>
