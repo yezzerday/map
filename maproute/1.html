@@ -30,7 +30,7 @@
       
       function initMap() {
         const destination = [100.19372806238205, 16.74810722965741];
-        const destinationName = "อาคารปราบไตรจักร"; 
+        const destinationName = "อาคารปราบไตรจักร"; // ชื่อสถานที่ปลายทาง
 
         const map = new mapboxgl.Map({
           container: 'map',
@@ -50,19 +50,22 @@
               const userLocation = [position.coords.longitude, position.coords.latitude];
               const heading = position.coords.heading || 0;
 
-              if (window.userMarker) window.userMarker.remove();
-              
               const userIcon = document.createElement('div');
               userIcon.style.width = '40px';
               userIcon.style.height = '40px';
-              userIcon.style.backgroundImage = 'url(https://raw.githubusercontent.com/yezzerday/map/refs/heads/main/image/navigation.png)';
+              userIcon.style.backgroundImage = 'url(https://raw.githubusercontent.com/yezzerday/map/refs/heads/main/image/navigate.png)';
               userIcon.style.backgroundSize = 'cover';
-              userIcon.style.transform = `rotate(${heading}deg)`;
+              userIcon.style.transform = `rotate(${heading}deg)`; // หมุนลูกศรตามทิศทาง
 
-              window.userMarker = new mapboxgl.Marker({ element: userIcon })
-                .setLngLat(userLocation)
-                .setPopup(new mapboxgl.Popup().setText("ตำแหน่งของคุณ"))
-                .addTo(map);
+              if (window.userMarker) {
+                window.userMarker.setLngLat(userLocation);
+                userIcon.style.transform = `rotate(${heading}deg)`; // อัปเดตการหมุน
+              } else {
+                window.userMarker = new mapboxgl.Marker({ element: userIcon })
+                  .setLngLat(userLocation)
+                  .setPopup(new mapboxgl.Popup().setText("ตำแหน่งของคุณ"))
+                  .addTo(map);
+              }
 
               const distance = calculateDistance(userLocation[1], userLocation[0], destination[1], destination[0]);
 
@@ -89,7 +92,7 @@
 
       // ฟังก์ชันคำนวณระยะทาง Haversine formula
       function calculateDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371e3; 
+        const R = 6371e3; // รัศมีโลกเป็นเมตร
         const φ1 = (lat1 * Math.PI) / 180;
         const φ2 = (lat2 * Math.PI) / 180;
         const Δφ = ((lat2 - lat1) * Math.PI) / 180;
@@ -100,8 +103,8 @@
           Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        const distance = R * c; 
-        return Math.round(distance); 
+        const distance = R * c; // คำนวณระยะทางเป็นเมตร
+        return Math.round(distance); // ปัดเศษ
       }
 
       async function getRoute(userLocation, destination, map) {
@@ -149,6 +152,6 @@
   </head>
   <body onload="initMap()">
     <div id="map"></div>
-    <div id="info">กำลังโหลดข้อมูล...</div> 
+    <div id="info">กำลังโหลดข้อมูล...</div> <!-- แสดงข้อมูลสถานที่และระยะทาง -->
   </body>
 </html>
