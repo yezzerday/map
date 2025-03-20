@@ -7,6 +7,8 @@
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.6.2/fuse.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
     <style>
         body { margin: 0; padding: 0; }
@@ -418,7 +420,7 @@ document.getElementById('clear-button').addEventListener('click', function() {
     }
 }
 function navigateAR(id, placeName) {
-    alert('กำลังนำทางไปยัง: ' + placeName);
+    toastr.info('กำลังนำทางไปยัง: ' + placeName);
     switch (id) {
         case 1:
             window.location.href = 'maproute/1.html';
